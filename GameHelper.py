@@ -147,13 +147,16 @@ class GameHelper:
         while self.counter.elapsed() < ms:
             QtWidgets.QApplication.processEvents(QEventLoop.AllEvents, 50)
 
-    def Screenshot(self, region=None):  # -> (im, (left, top))
+    def Screenshot(self, region=None,classname=None):  # -> (im, (left, top))
         try_count = 3
         success = False
         while try_count > 0 and not success:
             try:
                 try_count -= 1
-                self.Handle = win32gui.FindWindow("UnityWndClass", None)
+                if classname == None:
+                    self.Handle = win32gui.FindWindow("UnityWndClass", None)
+                else:
+                    self.Handle = win32gui.FindWindow(classname, None)
                 win32gui.SetActiveWindow(self.Handle)
                 hwnd = self.Handle
                 left, top, right, bot = win32gui.GetWindowRect(hwnd)
