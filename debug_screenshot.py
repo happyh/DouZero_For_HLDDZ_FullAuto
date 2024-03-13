@@ -10,14 +10,13 @@ def callback(hwnd, extra):
     clsname = win32gui.GetClassName(hwnd)
     print('窗口句柄:%s; 窗口标题：%s; 窗口类名: %s' % (hwnd, text, clsname))
 
-win32gui.EnumWindows(callback, None)
+#win32gui.EnumWindows(callback, None)
 
 GameHelper = GameHelper()
 
-# img = cv2.imread("1.png")
-
-img, _ = GameHelper.Screenshot(classname="D3JJ7GAME_GENT1001_2000")
+img = cv2.imread("test_pic/5.png")
+#img, _ = GameHelper.Screenshot(classname="D3JJ7GAME_GENT1001_2000")
 img = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2RGB)
-img = gh.DrawRectWithText(img, (180, 560, 1050, 90), "test")
+img = gh.DrawRectWithText(img, (88, 540, 1076, 66), "test")
 
 gh.ShowImg(img)

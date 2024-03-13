@@ -153,7 +153,7 @@ class Worker(QThread):
         self.FilterArg = 30  # 我的牌检测结果过滤参数
 
         # 坐标
-        self.MyHandCardsPos = (180, 560, 1050, 90)  # 我的截图区域
+        self.MyHandCardsPos = (88, 540, 1076, 66) # 我的截图区域
         self.LPlayedCardsPos = (320, 280, 400, 120)  # 左边出牌截图区域
         self.RPlayedCardsPos = (720, 280, 400, 120)  # 右边出牌截图区域
         self.MPlayedCardsPos = (180, 420, 1050, 90)  # 我的出牌截图区域
@@ -214,24 +214,18 @@ class Worker(QThread):
         self.MingpaiThreshold = float(data['mingpai'])
 
     def detect_start_btn(self):
-        beans = [(308, 204, 254, 60), (295, 474, 264, 60), (882, 203, 230, 60)]
-        for i in beans:
-            result = helper.LocateOnScreen("over", region=i, confidence=0.9)
-            if result is not None:
-                print("\n豆子出现，对局结束")
-                self.RunGame = False
-                try:
-                    if self.env is not None:
-                        self.env.game_over = True
-                        self.env.reset()
-                    self.int_display.emit(1)
-                except AttributeError as e:
-                    traceback.print_exc()
-                self.sleep(1000)
-                break
+        self.RunGame = False
+        try:
+            if self.env is not None:
+                self.env.game_over = True
+                self.env.reset()
+                self.int_display.emit(1)
+        except AttributeError as e:
+            traceback.print_exc()
+            self.sleep(1000)
 
         if self.auto_sign:
-            result = helper.LocateOnScreen("continue", region=(1100, 617, 200, 74))
+            result = helper.LocateOnScreen("continue", region=(740, 637, 170, 50))
             if result is not None:
                 if not self.loop_sign:
                     print("游戏已结束")
@@ -308,37 +302,17 @@ class Worker(QThread):
             pass
 
     def before_start(self):
-        if self.change_mode:
-            self.LandlordCardsPos = (602, 88, 218, 104)
         self.in_game_flag = False
         print("未进入游戏", end='')
-        in_game = helper.LocateOnScreen("chat", region=(1302, 744, 117, 56))
+        in_game = helper.LocateOnScreen("chakanfengshu", region=(1050, 766, 50, 20))
         while in_game is None:
             self.sleep(1000)
             print(".", end="")
             self.label_display.emit("未进入游戏")
-            in_game = helper.LocateOnScreen("chat", region=(1302, 744, 117, 56))
+            in_game = helper.LocateOnScreen("chakanfengshu", region=(1050, 766, 50, 20))
             self.detect_start_btn()
         self.in_game_flag = True
         self.sleep(300)
-        if self.in_game_flag:
-            print("\n在游戏场内")
-            print("游戏未开始", end="")
-            laotou = helper.LocateOnScreen("laotou", region=self.LandlordCardsPos)
-            while laotou is None:
-                self.sleep(500)
-                print(".", end="")
-                self.label_display.emit("游戏未开始")
-                laotou = helper.LocateOnScreen("laotou", region=self.LandlordCardsPos)
-                self.detect_start_btn()
-
-            print("\n开始游戏")
-            self.label_display.emit("开始游戏")
-        try:
-            self.RunGame = True
-            self.choose_multiples_stage()
-        except Exception as e:
-            print("加倍阶段有问题")
 
     def choose_multiples_stage(self):
         global win_rate, initialBeishu, cards_str

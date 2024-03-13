@@ -134,11 +134,12 @@ class GameHelper:
         self.Interrupt = False
         self.RealRate = (1440, 810)
         self.GetZoomRate()
-        for file in os.listdir("./pics"):
+        pic_path="./jj_pic"
+        for file in os.listdir(pic_path):
             info = file.split(".")
             if info[1] == "png":
-                tmpImage = Image.open("./pics/" + file)
-                imgCv = cv2.imread("./pics/" + file)
+                tmpImage = Image.open(pic_path+"/" + file)
+                imgCv = cv2.imread(pic_path+"/" + file)
                 self.Pics.update({info[0]: tmpImage})
                 self.PicsCV.update({info[0]: imgCv})
 
@@ -153,6 +154,7 @@ class GameHelper:
         while try_count > 0 and not success:
             try:
                 try_count -= 1
+                classname = "D3JJ7GAME_GENT1001_2000"
                 if classname == None:
                     self.Handle = win32gui.FindWindow("UnityWndClass", None)
                 else:
@@ -160,10 +162,16 @@ class GameHelper:
                 win32gui.SetActiveWindow(self.Handle)
                 hwnd = self.Handle
                 left, top, right, bot = win32gui.GetWindowRect(hwnd)
+                print("原始大小：",left,top,right,bot)
+
+                width = 1284
+                height = 796
                 # 调整窗口大小
-                win32gui.MoveWindow(hwnd, left, top, 1440, 810, True)
-                width = 1440
-                height = 810
+                win32gui.MoveWindow(hwnd, left, top, width, height, True)
+
+                left, top, right, bot = win32gui.GetWindowRect(hwnd)
+                print("调整后大小：", left, top, right, bot, )
+
                 self.RealRate = (width, height)
                 width = int(width)
                 height = int(height)
@@ -184,7 +192,7 @@ class GameHelper:
                 saveDC.DeleteDC()
                 mfcDC.DeleteDC()
                 win32gui.ReleaseDC(hwnd, hwndDC)
-                im = im.resize((1440, 810))
+                im = im.resize((width, height))
                 if region is not None:
                     im = im.crop((region[0], region[1], region[0] + region[2], region[1] + region[3]))
                 if result:
