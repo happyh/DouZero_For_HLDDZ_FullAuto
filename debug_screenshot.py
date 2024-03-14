@@ -17,6 +17,6 @@ GameHelper = GameHelper()
 img = cv2.imread("test_pic/5.png")
 #img, _ = GameHelper.Screenshot(classname="D3JJ7GAME_GENT1001_2000")
 img = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2RGB)
-img = gh.DrawRectWithText(img, (88, 540, 1076, 66), "test")
+img = gh.DrawRectWithText(img, (740, 637, 170, 50), "test")
 
 gh.ShowImg(img)

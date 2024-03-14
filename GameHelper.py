@@ -101,6 +101,7 @@ def LocateOnImage(image, template, region=None, confidence=0.8):
         x, y, w, h = region
         imgShape = image.shape
         image = image[y:y + h, x:x + w, :]
+    print("")
     res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
     _, _, _, maxLoc = cv2.minMaxLoc(res)
     if (res >= confidence).any():
@@ -132,8 +133,12 @@ class GameHelper:
         st = time.time()
         self.Handle = win32gui.FindWindow("UnityWndClass", None)
         self.Interrupt = False
-        self.RealRate = (1440, 810)
+        self.screen_width = 1284
+        self.screen_height = 796
+        #self.RealRate = (1440, 810)
+        self.RealRate = (self.screen_width, self.screen_height)
         self.GetZoomRate()
+
         pic_path="./jj_pic"
         for file in os.listdir(pic_path):
             info = file.split(".")
@@ -162,19 +167,17 @@ class GameHelper:
                 win32gui.SetActiveWindow(self.Handle)
                 hwnd = self.Handle
                 left, top, right, bot = win32gui.GetWindowRect(hwnd)
-                print("原始大小：",left,top,right,bot)
+                #print("原始大小：",left,top,right,bot)
 
-                width = 1284
-                height = 796
                 # 调整窗口大小
-                win32gui.MoveWindow(hwnd, left, top, width, height, True)
+                win32gui.MoveWindow(hwnd, left, top, self.screen_width, self.screen_height, True)
 
                 left, top, right, bot = win32gui.GetWindowRect(hwnd)
-                print("调整后大小：", left, top, right, bot, )
+                #print("调整后大小：", left, top, right, bot, )
 
-                self.RealRate = (width, height)
-                width = int(width)
-                height = int(height)
+                self.RealRate = (self.screen_width, self.screen_height)
+                width = int(self.screen_width)
+                height = int(self.screen_height)
                 hwndDC = win32gui.GetWindowDC(hwnd)
                 mfcDC = win32ui.CreateDCFromHandle(hwndDC)
                 saveDC = mfcDC.CreateCompatibleDC()
@@ -224,12 +227,12 @@ class GameHelper:
 
         if result is not None:
             self.LeftClick(result)
-            # print(result)
+            print("click @",result,",region=",region)
 
     def LeftClick(self, pos):
         x, y = pos
-        x = (x / 1440) * self.RealRate[0]
-        y = (y / 810) * self.RealRate[1]
+        x = (x / self.screen_width) * self.RealRate[0]
+        y = (y / self.screen_height) * self.RealRate[1]
         x = int(x)
         y = int(y)
 
@@ -261,8 +264,8 @@ class GameHelper:
 
     def LeftClick2(self, pos):
         x, y = pos
-        x = (x / 1440) * self.RealRate[0]
-        y = (y / 810) * self.RealRate[1]
+        x = (x / self.screen_width) * self.RealRate[0]
+        y = (y / self.screen_height) * self.RealRate[1]
         x = int(x)
         y = int(y)
 
@@ -283,8 +286,8 @@ class GameHelper:
 
     def MoveTo(self, pos):
         x, y = pos
-        x = (x / 1440) * self.RealRate[0]
-        y = (y / 810) * self.RealRate[1]
+        x = (x / self.screen_width) * self.RealRate[0]
+        y = (y / self.screen_height) * self.RealRate[1]
         x = int(x)
         y = int(y)
         self.Handle = win32gui.FindWindow("UnityWndClass", None)

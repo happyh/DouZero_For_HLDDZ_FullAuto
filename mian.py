@@ -214,18 +214,9 @@ class Worker(QThread):
         self.MingpaiThreshold = float(data['mingpai'])
 
     def detect_start_btn(self):
-        self.RunGame = False
-        try:
-            if self.env is not None:
-                self.env.game_over = True
-                self.env.reset()
-                self.int_display.emit(1)
-        except AttributeError as e:
-            traceback.print_exc()
-            self.sleep(1000)
-
         if self.auto_sign:
-            result = helper.LocateOnScreen("continue", region=(740, 637, 170, 50))
+            continue_pos = (740, 637, 170, 50)
+            result = helper.LocateOnScreen("continue", region=continue_pos)
             if result is not None:
                 if not self.loop_sign:
                     print("游戏已结束")
@@ -241,75 +232,22 @@ class Worker(QThread):
                     except AttributeError as e:
                         traceback.print_exc()
                         self.sleep(1000)
-                    # helper.ClickOnImage("continue", region=(1100, 617, 200, 74))
-                    helper.ClickOnImage("change", region=(1077, 52, 43, 57))
+                    helper.ClickOnImage("continue", region=continue_pos)
                     self.sleep(1000)
 
-            win = helper.LocateOnScreen("win", region=(756, 191, 240, 107))
-            lose = helper.LocateOnScreen("lose", region=(756, 191, 240, 107))
-            if win is not None or lose is not None:
-                if not self.loop_sign:
-                    print("游戏已结束")
-                    self.label_display.emit("游戏已结束")
-                    self.stop.emit(1)
-                else:
-                    self.RunGame = False
-                    try:
-                        if self.env is not None:
-                            self.env.game_over = True
-                            self.env.reset()
-                        self.int_display.emit(1)
-                    except AttributeError as e:
-                        traceback.print_exc()
-                        self.sleep(1000)
-                    self.sleep(1000)
-
-            result = helper.LocateOnScreen("start_game", region=(720, 466, 261, 117))
-            if result is not None:
-                helper.ClickOnImage("start_game", region=(720, 466, 261, 117))
-                self.sleep(1000)
-
-            result = helper.LocateOnScreen("tuoguan", region=(577, 613, 271, 128))
-            if result is not None:
-                helper.ClickOnImage("tuoguan", region=(577, 613, 271, 128))
-                self.sleep(1000)
-
-            result = helper.LocateOnScreen("sure", region=(630, 456, 289, 143))
-            if result is not None:
-                helper.ClickOnImage("sure", region=(630, 456, 289, 143))
-                self.sleep(1000)
-
-            result = helper.LocateOnScreen("tuijian", region=(729, 465, 219, 100))
-            if result is not None:
-                helper.ClickOnImage("tuijian", region=(729, 465, 219, 100))
-                self.sleep(1000)
-
-            result = helper.LocateOnScreen("good", region=(434, 599, 219, 88))
-            if result is not None:
-                helper.ClickOnImage("good", region=(434, 599, 219, 88))
-                self.sleep(1000)
-
-            result = helper.LocateOnScreen("zhidao", region=(593, 543, 224, 94))
-            if result is not None:
-                helper.ClickOnImage("zhidao", region=(593, 543, 224, 94))
-                self.sleep(1000)
-
-            result = helper.LocateOnScreen("chacha", region=(1036, 65, 300, 230))
-            if result is not None:
-                helper.ClickOnImage("chacha", region=(1036, 65, 300, 230))
-                self.sleep(1000)
         else:
             pass
 
     def before_start(self):
         self.in_game_flag = False
         print("未进入游戏", end='')
-        in_game = helper.LocateOnScreen("chakanfengshu", region=(1050, 766, 50, 20))
+        chakanfengshu_pos = (1020, 750, 100, 50)
+        in_game = helper.LocateOnScreen("chakanfengshu", region=chakanfengshu_pos)
         while in_game is None:
             self.sleep(1000)
             print(".", end="")
             self.label_display.emit("未进入游戏")
-            in_game = helper.LocateOnScreen("chakanfengshu", region=(1050, 766, 50, 20))
+            in_game = helper.LocateOnScreen("chakanfengshu", region=chakanfengshu_pos)
             self.detect_start_btn()
         self.in_game_flag = True
         self.sleep(300)
